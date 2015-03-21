@@ -1,0 +1,26 @@
+{
+  "name": "get-module-info",
+  "version": "1.0.0",
+  "description": "Get data and information from an installed npm module",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "keywords": [
+    "npm",
+    "module",
+    "documentation"
+  ],
+  "author": "Brent Jackson",
+  "license": "MIT",
+  "dependencies": {
+    "cssstats": "^1.2.1",
+    "lodash": "^3.5.0",
+    "postcss": "^4.0.6",
+    "postcss-import": "^5.0.3"
+  },
+  "devDependencies": {
+    "basscss-grid": "0.0.14",
+    "mocha": "^2.2.1"
+  }
+}

@@ -1,0 +1,52 @@
+
+var _ = require('lodash');
+var fs = require('fs');
+var path = require('path');
+
+var postcss = require('postcss');
+var postcssImport = require('postcss-import');
+var cssstats = require('cssstats');
+
+module.exports = function(name, options) {
+
+  var options = options || {};
+  var options = _.defaults(options, {
+    name: false,
+    dirname: '.',
+  });
+  var results = {};
+  var filepath;
+
+  if (!name || typeof name !== 'string') {
+    console.error('Module name is required and must be a string');
+    return false;
+  }
+
+  filepath = options.dirname + '/node_modules/' + name;
+
+  function parseStyle(style) {
+    var src = fs.readFileSync(filepath + '/' + style, 'utf8');
+    var css = postcss().use(postcssImport()).process(src, { from: filepath + '/' + style }).css;
+    return css;
+  }
+
+  results = require(filepath + '/package.json') || false;
+  if (fs.existsSync(filepath + '/README.md')) {
+    results.readme = fs.readFileSync(filepath + '/README.md', 'utf8');
+  } else {
+    console.log('README.md not found for ' + name);
+  }
+
+  var style = results.style || fs.existsSync(filepath + '/index.css') ? 'index.css' : false;
+  if (style) {
+    results.css = parseStyle(style);
+    results.stats = cssstats(results.css);
+  }
+
+  results.title = _.capitalize(results.name);
+  results.npm_link = '//npmjs.com/package/' + name;
+
+  return results;
+
+};
+
