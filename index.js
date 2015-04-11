@@ -7,6 +7,27 @@ var postcss = require('postcss');
 var postcssImport = require('postcss-import');
 var cssstats = require('cssstats');
 
+
+// Postcss plugin to remove :root rules, @custom-media declarations, and comments
+var cleanDisplay = postcss.plugin('clean-display', function (opts) {
+  opts = opts || {};
+  return function (css) {
+    css.eachRule(function(rule) {
+      if (rule.selector === ':root') {
+        rule.removeSelf();
+      }
+    });
+    css.eachAtRule(function(atRule) {
+      if (atRule.name === 'custom-media') {
+        atRule.removeSelf();
+      }
+    });
+    css.eachComment(function(comment) {
+      comment.removeSelf();
+    });
+  };
+});
+
 module.exports = function(name, options) {
 
   var options = options || {};
@@ -26,8 +47,11 @@ module.exports = function(name, options) {
 
   function parseStyle(style) {
     var src = fs.readFileSync(filepath + '/' + style, 'utf8');
-    var css = postcss().use(postcssImport()).process(src, { from: filepath + '/' + style }).css;
-    return css;
+    var ast = postcss()
+      .use(postcssImport())
+      .use(cleanDisplay())
+      .process(src, { from: filepath + '/' + style });
+    return ast;
   }
 
   results = require(filepath + '/package.json') || false;
@@ -39,7 +63,8 @@ module.exports = function(name, options) {
 
   var style = results.style || fs.existsSync(filepath + '/index.css') ? 'index.css' : false;
   if (style) {
-    results.css = parseStyle(style);
+    results.ast = parseStyle(style);
+    results.css = results.ast.css;
     results.stats = cssstats(results.css);
   }
 
