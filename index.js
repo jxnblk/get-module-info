@@ -34,22 +34,27 @@ module.exports = function(name, options) {
   var options = _.defaults(options, {
     name: false,
     dirname: '.',
+    clean: true,
   });
   var results = {};
   var filepath;
+  var processor = postcss();
 
   if (!name || typeof name !== 'string') {
     console.error('Module name is required and must be a string');
     return false;
   }
 
+  if (options.clean) {
+    processor.use(cleanDisplay());
+  }
+
   filepath = options.dirname + '/node_modules/' + name;
 
   function parseStyle(style) {
     var src = fs.readFileSync(filepath + '/' + style, 'utf8');
-    var ast = postcss()
+    var ast = processor
       .use(postcssImport())
-      .use(cleanDisplay())
       .process(src, { from: filepath + '/' + style });
     return ast;
   }
