@@ -34,7 +34,6 @@ module.exports = function(name, options) {
   var options = _.defaults(options, {
     name: false,
     dirname: '.',
-    clean: true,
   });
   var results = {};
   var filepath;
@@ -43,10 +42,6 @@ module.exports = function(name, options) {
   if (!name || typeof name !== 'string') {
     console.error('Module name is required and must be a string');
     return false;
-  }
-
-  if (options.clean) {
-    processor.use(cleanDisplay());
   }
 
   filepath = options.dirname + '/node_modules/' + name;
@@ -70,6 +65,7 @@ module.exports = function(name, options) {
   if (style) {
     results.ast = parseStyle(style);
     results.css = results.ast.css;
+    results.cleanCss = postcss().use(cleanDisplay()).process(results.css).css;
     results.stats = cssstats(results.css);
   }
 

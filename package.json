@@ -14,14 +14,14 @@
   "author": "Brent Jackson",
   "license": "MIT",
   "dependencies": {
-    "cssstats": "^1.2.1",
-    "lodash": "^3.5.0",
-    "postcss": "^4.0.6",
-    "postcss-import": "^5.0.3"
+    "cssstats": "^1.5.1",
+    "lodash": "^3.7.0",
+    "postcss": "^4.1.5",
+    "postcss-import": "^5.2.0"
   },
   "devDependencies": {
-    "basscss-grid": "0.0.14",
-    "mocha": "^2.2.1"
+    "basscss-grid": "1.0.2",
+    "mocha": "^2.2.4"
   },
   "directories": {
     "test": "test"
