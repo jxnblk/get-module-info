@@ -5,7 +5,7 @@ var assert = require('assert');
 var getModuleInfo = require('..');
 
 var postcssInfo = getModuleInfo('postcss');
-var basscssGridInfo = getModuleInfo('basscss-grid');
+var basscssGridInfo = getModuleInfo('basscss-grid', { ast: false });
 
 
 describe('get-module-info', function() {
@@ -36,6 +36,10 @@ describe('get-module-info', function() {
 
   it('should get css stats', function() {
     assert.equal(typeof basscssGridInfo.stats, 'object');
+  });
+
+  it('should allow optional results', function() {
+    assert.equal(typeof basscssGridInfo.ast, 'undefined');
   });
 
 });
