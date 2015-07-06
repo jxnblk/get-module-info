@@ -34,6 +34,10 @@ module.exports = function(name, options) {
   var options = _.defaults(options, {
     name: false,
     dirname: '.',
+    ast: true,
+    css: true,
+    cleanCss: true,
+    stats: true
   });
   var results = {};
   var filepath;
@@ -63,10 +67,12 @@ module.exports = function(name, options) {
 
   var style = results.style || fs.existsSync(filepath + '/index.css') ? 'index.css' : false;
   if (style) {
-    results.ast = parseStyle(style);
-    results.css = results.ast.css;
-    results.cleanCss = postcss().use(cleanDisplay()).process(results.css).css;
-    results.stats = cssstats(results.css);
+    var ast = parseStyle(style);
+    var css = ast.css;
+    if (options.ast) { results.ast = ast; }
+    if (options.css) { results.css = css; }
+    if (options.cleanCss) { results.cleanCss = postcss().use(cleanDisplay()).process(css).css; }
+    if (options.stats) { results.stats = cssstats(css); }
   }
 
   results.title = _.capitalize(results.name);
@@ -75,4 +81,3 @@ module.exports = function(name, options) {
   return results;
 
 };
-
